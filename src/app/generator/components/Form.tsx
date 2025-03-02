@@ -8,6 +8,16 @@ import {
   View,
   Text,
 } from "@react-pdf/renderer";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Form,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export interface FormValues {
   [key: string]: string;
@@ -24,32 +34,57 @@ const GeneratedDocument: FC<FormValues> = ({ field1, field2 }) => (
   </Document>
 );
 
-const Form: FC = () => {
-  const { register, watch } = useForm<FormValues>();
+const FormComponent: FC = () => {
+  const form = useForm<FormValues>();
+  const {
+    watch,
+    control,
+    formState: { isValid },
+  } = form;
   const values = watch();
 
   return (
-    <div>
-      <label>
-        Field 1:
-        <input {...register("field1", { required: true })} />
-      </label>
-      <label>
-        field2:
-        <input {...register("field2", { required: true })} />
-      </label>
-      <PDFDownloadLink
-        document={<GeneratedDocument {...values} />}
-        fileName="somename.pdf"
-      >
-        {({ loading }) =>
-          loading ? "Generating document..." : "Download now!"
-        }
-      </PDFDownloadLink>
-
-      <GeneratedDocument {...values} />
-    </div>
+    <Form {...form}>
+      <form className="space-y-6">
+        <FormField
+          control={control}
+          name="field1"
+          rules={{ required: "Це поле обов'язкове!" }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Поле 1:</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="field2"
+          rules={{ required: "Це поле обов'язкове!" }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Поле 2:</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <PDFDownloadLink
+          document={<GeneratedDocument {...values} />}
+          fileName="somename.pdf"
+        >
+          <Button disabled={!isValid} className="w-full" type="button">
+            Завантажити згенерований документ
+          </Button>
+        </PDFDownloadLink>
+      </form>
+    </Form>
   );
 };
 
-export default Form;
+export default FormComponent;

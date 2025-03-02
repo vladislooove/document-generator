@@ -7,5 +7,9 @@ export const metadata: Metadata = {
 };
 
 export default function Generator() {
-  return <Form />;
+  return (
+    <main className="p-6">
+      <Form />
+    </main>
+  );
 }
