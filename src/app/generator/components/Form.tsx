@@ -1,7 +1,13 @@
 "use client";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Document, Page, View, Text } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  View,
+  Text,
+  PDFDownloadLink,
+} from "@react-pdf/renderer";
 import {
   FormControl,
   FormField,
@@ -12,19 +18,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import dynamic from "next/dynamic";
 
 export interface FormValues {
   [key: string]: string;
 }
-
-const PDFDownloadLink = dynamic(
-  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
-  {
-    ssr: false,
-    loading: () => <p>Loading...</p>,
-  }
-);
 
 const GeneratedDocument: FC<FormValues> = ({ field1, field2 }) => (
   <Document>
@@ -45,6 +42,13 @@ const FormComponent: FC = () => {
     formState: { isValid },
   } = form;
   const values = watch();
+
+  // Hack to not prerender web api related components in node environment
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <Form {...form}>
@@ -77,14 +81,16 @@ const FormComponent: FC = () => {
             </FormItem>
           )}
         />
-        <PDFDownloadLink
-          document={<GeneratedDocument {...values} />}
-          fileName="somename.pdf"
-        >
-          <Button disabled={!isValid} className="w-full" type="button">
-            Завантажити згенерований документ
-          </Button>
-        </PDFDownloadLink>
+        {isClient && (
+          <PDFDownloadLink
+            document={<GeneratedDocument {...values} />}
+            fileName="somename.pdf"
+          >
+            <Button disabled={!isValid} className="w-full" type="button">
+              Завантажити згенерований документ
+            </Button>
+          </PDFDownloadLink>
+        )}
       </form>
     </Form>
   );
