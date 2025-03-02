@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,7 +29,7 @@ export interface LoginFormValues {
 
 const LoginForm: FC = () => {
   const form = useForm<LoginFormValues>();
-  const { register, handleSubmit, setError, control } = form;
+  const { handleSubmit, setError, control } = form;
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
