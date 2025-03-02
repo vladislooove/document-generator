@@ -1,13 +1,7 @@
 "use client";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import {
-  PDFDownloadLink,
-  Document,
-  Page,
-  View,
-  Text,
-} from "@react-pdf/renderer";
+import { Document, Page, View, Text } from "@react-pdf/renderer";
 import {
   FormControl,
   FormField,
@@ -18,10 +12,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import dynamic from "next/dynamic";
 
 export interface FormValues {
   [key: string]: string;
 }
+
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  }
+);
 
 const GeneratedDocument: FC<FormValues> = ({ field1, field2 }) => (
   <Document>
