@@ -1,13 +1,8 @@
 "use client";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
+import { saveAs } from "file-saver";
 import { useForm } from "react-hook-form";
-import {
-  Document,
-  Page,
-  View,
-  Text,
-  PDFDownloadLink,
-} from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import {
   FormControl,
   FormField,
@@ -18,21 +13,28 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import PDFDocument from "./PDFDocument";
+import { Card } from "@/components/ui/card";
 
 export interface FormValues {
-  [key: string]: string;
+  fullName: string;
+  model: string;
+  vin: string;
+  modelYear: string;
+  year: string;
+  category: string;
+  engineType: string;
+  engineDetails: string;
+  engineNumber: string;
+  bodyType: string;
+  seats: string;
+  wheels: string;
+  weight: string;
+  purpose: string;
+  country: string;
+  other: string;
+  number: string;
 }
-
-const GeneratedDocument: FC<FormValues> = ({ field1, field2 }) => (
-  <Document>
-    <Page>
-      <View>
-        <Text>generated field1: {field1}</Text>
-        <Text>generated field2: {field2}</Text>
-      </View>
-    </Page>
-  </Document>
-);
 
 const FormComponent: FC = () => {
   const form = useForm<FormValues>();
@@ -43,56 +45,267 @@ const FormComponent: FC = () => {
   } = form;
   const values = watch();
 
-  // Hack to not prerender web api related components in node environment
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const generatePdfDocument = async () => {
+    const blob = await pdf(<PDFDocument {...values} />).toBlob();
+    saveAs(
+      blob,
+      `Довідка-${values.number}-${new Date().toLocaleDateString("uk")}.pdf`
+    );
+  };
 
   return (
-    <Form {...form}>
-      <form className="space-y-6">
-        <FormField
-          control={control}
-          name="field1"
-          rules={{ required: "Це поле обов'язкове!" }}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Поле 1:</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={control}
-          name="field2"
-          rules={{ required: "Це поле обов'язкове!" }}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Поле 2:</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {isClient && (
-          <PDFDownloadLink
-            document={<GeneratedDocument {...values} />}
-            fileName="somename.pdf"
+    <Card className="w-4xl p-6 mx-auto">
+      <Form {...form}>
+        <form className="space-y-6">
+          <FormField
+            control={control}
+            name="number"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Номер довідки:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="fullName"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Видана про те, що належний йому (їй) КТЗ:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="model"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Марка і модель:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="vin"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>VIN:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="modelYear"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Модельний рік:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="year"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Календарний рік:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="category"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Категорія транспортного засобу:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="engineType"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Тип двигуна:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="engineDetails"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Об’єм, см3 / потужність двигуна, кВт:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="engineNumber"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Тип (номер) двигуна:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="bodyType"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Тип кузова:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="seats"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Кількість місць для сидіння:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="wheels"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Колісна формула:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="purpose"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Призначення:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="weight"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Власна маса ТЗ, кг:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="country"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Країна походження:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="other"
+            rules={{ required: "Це поле обов'язкове!" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Інше:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            disabled={!isValid}
+            className="w-full"
+            type="button"
+            onClick={generatePdfDocument}
           >
-            <Button disabled={!isValid} className="w-full" type="button">
-              Завантажити згенерований документ
-            </Button>
-          </PDFDownloadLink>
-        )}
-      </form>
-    </Form>
+            Завантажити згенерований документ
+          </Button>
+        </form>
+      </Form>
+    </Card>
   );
 };
 
