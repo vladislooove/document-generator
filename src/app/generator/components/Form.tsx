@@ -39,13 +39,12 @@ export interface FormValues {
 const FormComponent: FC = () => {
   const form = useForm<FormValues>();
   const {
-    watch,
     control,
-    formState: { isValid },
+    formState: { isSubmitting },
+    handleSubmit,
   } = form;
-  const values = watch();
 
-  const generatePdfDocument = async () => {
+  const onSubmit = async (values: FormValues) => {
     const blob = await pdf(<PDFDocument {...values} />).toBlob();
     saveAs(
       blob,
@@ -56,7 +55,7 @@ const FormComponent: FC = () => {
   return (
     <Card className="w-4xl p-6 mx-auto">
       <Form {...form}>
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <FormField
             control={control}
             name="number"
@@ -295,12 +294,7 @@ const FormComponent: FC = () => {
               </FormItem>
             )}
           />
-          <Button
-            disabled={!isValid}
-            className="w-full"
-            type="button"
-            onClick={generatePdfDocument}
-          >
+          <Button className="w-full" type="submit" disabled={isSubmitting}>
             Завантажити згенерований документ
           </Button>
         </form>

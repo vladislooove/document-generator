@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { createClient } from "@/supabase/client";
 import { useRouter } from "next/navigation";
@@ -29,13 +29,16 @@ export interface LoginFormValues {
 
 const LoginForm: FC = () => {
   const form = useForm<LoginFormValues>();
-  const { handleSubmit, setError, control } = form;
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    handleSubmit,
+    setError,
+    control,
+    formState: { isSubmitting },
+  } = form;
   const router = useRouter();
 
   const onSubmit = async (values: LoginFormValues) => {
     try {
-      setIsLoading(true);
       const { error } = await createClient().auth.signInWithPassword(values);
 
       if (error) {
@@ -45,8 +48,6 @@ const LoginForm: FC = () => {
       router.push("/generator");
     } catch {
       setError("password", { message: "Unexpected error" });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -96,7 +97,7 @@ const LoginForm: FC = () => {
             />
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
               Увійти
             </Button>
           </CardFooter>
