@@ -1,7 +1,7 @@
 "use client";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
-import supabase from "../../supabase";
+import { createClient } from "@/supabase/client";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,7 +36,7 @@ const LoginForm: FC = () => {
   const onSubmit = async (values: LoginFormValues) => {
     try {
       setIsLoading(true);
-      const { error } = await supabase.auth.signInWithPassword(values);
+      const { error } = await createClient().auth.signInWithPassword(values);
 
       if (error) {
         return setError("password", { message: error.message });
