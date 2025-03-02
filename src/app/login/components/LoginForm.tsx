@@ -17,8 +17,15 @@ const LoginForm: FC = () => {
   const onSubmit = async (values: LoginFormValues) => {
     try {
       setIsLoading(true);
-      await supabase.auth.signInWithPassword(values);
+      const { error } = await supabase.auth.signInWithPassword(values);
+
+      if (error) {
+        return alert(error);
+      }
+
       router.push("/generator");
+    } catch {
+      alert("Unexpected error");
     } finally {
       setIsLoading(false);
     }
